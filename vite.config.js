@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Replace 'YOUR_REPO_NAME' with your actual GitHub repository name
-const BASE = '/YOUR_REPO_NAME/'
+
+const BASE = '/from-paper-to-code/'
 
 export default defineConfig({
   plugins: [react()],
