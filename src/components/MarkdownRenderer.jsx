@@ -1,18 +1,3 @@
-/**
- * MarkdownRenderer.jsx
- *
- * Core rendering pipeline:
- *   Markdown string
- *   → react-markdown (with remark/rehype plugins)
- *   → custom component map (code blocks, math, mermaid, custom)
- *
- * Supports:
- *   - GFM (tables, strikethrough, task lists)
- *   - Inline and block math via KaTeX
- *   - Code syntax highlighting via Prism (rehype-prism-plus)
- *   - Mermaid diagrams (lazy-loaded)
- *   - Custom interactive React components injected via <Component name="X" />
- */
 import { useMemo, useEffect, useRef, useState, Suspense, lazy } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
@@ -20,6 +5,15 @@ import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 import rehypePrismPlus from 'rehype-prism-plus'
+
+// --- Helper: Extract raw text from React children ---
+function getCodeString(children) {
+  if (children === undefined || children === null) return ''
+  if (typeof children === 'string') return children
+  if (Array.isArray(children)) return children.map(getCodeString).join('')
+  if (typeof children === 'object' && children.props) return getCodeString(children.props.children)
+  return ''
+}
 
 // ── Mermaid diagram component (lazy loads mermaid) ──────────────
 function MermaidDiagram({ code }) {
@@ -38,6 +32,7 @@ function MermaidDiagram({ code }) {
           fontFamily: 'Lora, Georgia, serif',
         })
         const id = `mermaid-${Math.random().toString(36).slice(2)}`
+        // Mermaid expects pure text, not "[object Object]"
         const { svg } = await mermaid.render(id, code)
         if (!cancelled) setSvg(svg)
       } catch (e) {
@@ -63,19 +58,20 @@ function MermaidDiagram({ code }) {
 function CodeBlock({ node, inline, className, children, customComponents, ...props }) {
   const match = /language-(\w+)/.exec(className || '')
   const lang = match ? match[1] : ''
-  const code = String(children).replace(/\n$/, '')
+  
+  // FIX: Use helper to extract clean text from the React children tree
+  const rawCode = getCodeString(children).replace(/\n$/, '')
 
   // Mermaid: render as diagram
   if (lang === 'mermaid') {
-    return <MermaidDiagram code={code} />
+    return <MermaidDiagram code={rawCode} />
   }
 
   // Custom component: e.g. ```component\nAttentionVisualizer\n```
   if (lang === 'component' && customComponents) {
-    const name = code.trim()
+    const name = rawCode.trim()
     const ComponentEntry = customComponents[name]
     if (ComponentEntry) {
-      // ComponentEntry is a lazy-loaded component
       return (
         <div className="interactive-wrapper">
           <Suspense fallback={<div className="state-loading">Loading component…</div>}>
@@ -87,7 +83,8 @@ function CodeBlock({ node, inline, className, children, customComponents, ...pro
     return <div className="state-error">Component "{name}" not found.</div>
   }
 
-  // Regular code block — prism highlighting applied by rehype-prism-plus
+  // Regular code block — pass children directly (preserving Prism highlighting nodes)
+  // We only used rawCode for logic/mermaid; for display, we want the highlighted children.
   return (
     <pre data-language={lang || undefined} {...props}>
       <code className={className}>{children}</code>
@@ -97,7 +94,6 @@ function CodeBlock({ node, inline, className, children, customComponents, ...pro
 
 // ── Main renderer ────────────────────────────────────────────────
 export default function MarkdownRenderer({ content, customComponents = {} }) {
-  // Build lazy component map from the loader promises
   const lazyComponents = useMemo(() => {
     const map = {}
     for (const [name, loader] of Object.entries(customComponents)) {
@@ -107,15 +103,12 @@ export default function MarkdownRenderer({ content, customComponents = {} }) {
   }, [customComponents])
 
   const components = useMemo(() => ({
-    // Route code blocks through our custom handler
     code(props) {
       return <CodeBlock {...props} customComponents={lazyComponents} />
     },
-    // Style images with lazy loading
     img({ src, alt, ...props }) {
       return <img src={src} alt={alt} loading="lazy" {...props} />
     },
-    // Make sure external links open in new tab
     a({ href, children, ...props }) {
       const isExternal = href?.startsWith('http')
       return (
@@ -136,7 +129,7 @@ export default function MarkdownRenderer({ content, customComponents = {} }) {
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[
           rehypeKatex,
-          rehypeRaw,         // allows raw HTML in MD (for custom component tags)
+          rehypeRaw,
           [rehypePrismPlus, { ignoreMissing: true }],
         ]}
         components={components}
