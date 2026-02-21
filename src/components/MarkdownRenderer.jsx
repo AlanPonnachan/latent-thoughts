@@ -1,4 +1,7 @@
-import { useMemo, useEffect, useRef, useState, Suspense, lazy } from 'react'
+/**
+ * MarkdownRenderer.jsx
+ */
+import { useMemo, useEffect, useRef, useState, Suspense, lazy, isValidElement } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
 import remarkGfm from 'remark-gfm'
@@ -16,9 +19,8 @@ function getCodeString(children) {
   return ''
 }
 
-// ── Mermaid diagram component (lazy loads mermaid) ──────────────
+// ── Mermaid diagram component ───────────────────────────────────
 function MermaidDiagram({ code }) {
-  const ref = useRef(null)
   const [svg, setSvg] = useState(null)
   const [error, setError] = useState(null)
 
@@ -31,9 +33,9 @@ function MermaidDiagram({ code }) {
           startOnLoad: false,
           theme: 'neutral',
           fontFamily: 'Lora, Georgia, serif',
+          securityLevel: 'loose',
         })
         const id = `mermaid-${Math.random().toString(36).slice(2)}`
-        // Mermaid expects pure text, not "[object Object]"
         const { svg } = await mermaid.render(id, code)
         if (!cancelled) setSvg(svg)
       } catch (e) {
@@ -55,20 +57,18 @@ function MermaidDiagram({ code }) {
   )
 }
 
-// ── Code block component ─────────────────────────────────────────
+// ── Code Component (Handles content generation) ────────────────
 function CodeBlock({ node, inline, className, children, customComponents, ...props }) {
   const match = /language-(\w+)/.exec(className || '')
   const lang = match ? match[1] : ''
-  
-  // FIX: Use helper to extract clean text from the React children tree
   const rawCode = getCodeString(children).replace(/\n$/, '')
 
-  // Mermaid: render as diagram
+  // 1. Mermaid
   if (lang === 'mermaid') {
     return <MermaidDiagram code={rawCode} />
   }
 
-  // Custom component: e.g. ```component\nAttentionVisualizer\n```
+  // 2. Interactive Components
   if (lang === 'component' && customComponents) {
     const name = rawCode.trim()
     const ComponentEntry = customComponents[name]
@@ -84,17 +84,38 @@ function CodeBlock({ node, inline, className, children, customComponents, ...pro
     return <div className="state-error">Component "{name}" not found.</div>
   }
 
-  // Regular code block — pass children directly (preserving Prism highlighting nodes)
-  // We only used rawCode for logic/mermaid; for display, we want the highlighted children.
+  // 3. Regular Code
+  // Note: We return JUST the <code> tag here. The parent <pre> is handled by PreBlock.
   return (
-    <pre data-language={lang || undefined} {...props}>
-      <code className={className}>{children}</code>
-    </pre>
+    <code className={className} {...props}>
+      {children}
+    </code>
   )
 }
 
-// ── Main renderer ────────────────────────────────────────────────
+// ── Pre Component (Handles the wrapper) ────────────────────────
+// This determines if we should render a styled <pre> box or a plain fragment
+function PreBlock({ children, ...props }) {
+  // Inspect the child <code> element to detect the language
+  if (isValidElement(children) && children.type === 'code' || children.props?.className) {
+     const className = children.props.className || ''
+     const match = /language-(\w+)/.exec(className || '')
+     const lang = match ? match[1] : ''
+
+     // If it is a special component, DO NOT render the <pre> wrapper
+     // This removes the black background/border
+     if (lang === 'mermaid' || lang === 'component') {
+       return <>{children}</>
+     }
+  }
+
+  // Default behavior: render the <pre> (which has the dark theme)
+  return <pre {...props}>{children}</pre>
+}
+
+// ── Main Renderer ──────────────────────────────────────────────
 export default function MarkdownRenderer({ content, customComponents = {} }) {
+  // Build lazy map
   const lazyComponents = useMemo(() => {
     const map = {}
     for (const [name, loader] of Object.entries(customComponents)) {
@@ -104,13 +125,21 @@ export default function MarkdownRenderer({ content, customComponents = {} }) {
   }, [customComponents])
 
   const components = useMemo(() => ({
-    code(props) {
-      return <CodeBlock {...props} customComponents={lazyComponents} />
+    // Override both PRE and CODE to control wrapping
+    pre: PreBlock,
+    code: (props) => <CodeBlock {...props} customComponents={lazyComponents} />,
+    
+    // Zoomable Images
+    img: ({ src, ...props }) => {
+      // Fix relative paths for production (GitHub Pages)
+      const fixedSrc = (src && src.startsWith('/') && !src.startsWith('//'))
+        ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${src}`
+        : src
+      return <ZoomableImage src={fixedSrc} {...props} />
     },
-    img(props) {
-      return <ZoomableImage {...props} />
-    },
-    a({ href, children, ...props }) {
+    
+    // External Links
+    a: ({ href, children, ...props }) => {
       const isExternal = href?.startsWith('http')
       return (
         <a

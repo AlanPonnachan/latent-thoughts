@@ -585,9 +585,7 @@ img { max-width: 100%; height: auto; }
   margin: 1.5em 0;
 }
 
-/* ============================================================
-   MERMAID DIAGRAMS
-   ============================================================ */
+/* Wrapper for Mermaid Diagrams */
 .mermaid-wrapper {
   background: var(--paper-warm);
   border: 1px solid var(--ink-faint);
@@ -598,9 +596,7 @@ img { max-width: 100%; height: auto; }
   text-align: center;
 }
 
-/* ============================================================
-   INTERACTIVE COMPONENT WRAPPER
-   ============================================================ */
+/* Wrapper for Interactive Components */
 .interactive-wrapper {
   border: 1px dashed var(--ink-faint);
   border-radius: 4px;
@@ -623,6 +619,7 @@ img { max-width: 100%; height: auto; }
   text-transform: uppercase;
   color: var(--accent);
 }
+
 
 /* ============================================================
    POST NAV (prev/next)
