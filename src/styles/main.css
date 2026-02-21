@@ -995,3 +995,36 @@ img { max-width: 100%; height: auto; }
 .code-block-container pre::-webkit-scrollbar-thumb:hover {
   background-color: #4f4a46;
 }
+
+
+/* ============================================================
+   MOBILE OPTIMIZATIONS FOR INTERACTIVES
+   ============================================================ */
+
+@media (max-width: 640px) {
+  /* 1. Recover screen space */
+  .interactive-wrapper {
+    padding: var(--sp-4);      /* Reduce padding from 2rem to 1rem */
+    margin: 2em 0;
+  }
+
+  /* 2. Adjust the "INTERACTIVE" label position */
+  .interactive-wrapper::before {
+    left: var(--sp-2);
+  }
+
+  /* 3. Make the heatmap scroll container full width */
+  .interactive-wrapper > div {
+    width: 100%;
+  }
+  
+  /* 4. Ensure inputs/buttons are touch-friendly */
+  input[type="range"] {
+    height: 24px; /* Larger touch area */
+  }
+  
+  button {
+    min-height: 36px;
+    touch-action: manipulation;
+  }
+}
