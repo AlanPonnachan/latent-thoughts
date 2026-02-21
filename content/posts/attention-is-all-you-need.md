@@ -18,6 +18,9 @@ readingTime: 18
 [Placeholder — explain RNNs, their limitations, and why attention matters.]
 
 ---
+### sample image:
+
+![DNN Example](\images\dnn.png "A visualization of the DNN")
 
 ## The Attention Mechanism
 

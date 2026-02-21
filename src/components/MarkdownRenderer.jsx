@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 import rehypePrismPlus from 'rehype-prism-plus'
+import ZoomableImage from './ZoomableImage.jsx'
 
 // --- Helper: Extract raw text from React children ---
 function getCodeString(children) {
@@ -106,8 +107,8 @@ export default function MarkdownRenderer({ content, customComponents = {} }) {
     code(props) {
       return <CodeBlock {...props} customComponents={lazyComponents} />
     },
-    img({ src, alt, ...props }) {
-      return <img src={src} alt={alt} loading="lazy" {...props} />
+    img(props) {
+      return <ZoomableImage {...props} />
     },
     a({ href, children, ...props }) {
       const isExternal = href?.startsWith('http')

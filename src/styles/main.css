@@ -760,3 +760,145 @@ img { max-width: 100%; height: auto; }
 .token.regex, .token.important, .token.variable { color: #ebcb8b; }
 .token.important, .token.bold { font-weight: bold; }
 .token.italic { font-style: italic; }
+
+
+/* ============================================================
+   IMAGE LIGHTBOX (MOBILE OPTIMIZED)
+   ============================================================ */
+
+/* Wrapper in the post flow */
+.post-image-wrapper {
+  margin: 2em 0;
+  text-align: center;
+}
+
+.post-image-wrapper figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  margin-top: 0.5rem;
+}
+
+/* The clickable thumbnail */
+.post-image-zoomable {
+  cursor: zoom-in;
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--ink-faint);
+  border-radius: 4px;
+  transition: opacity 0.2s, border-color 0.2s;
+  margin: 0 auto; /* Center it */
+}
+
+.post-image-zoomable:hover {
+  opacity: 0.9;
+  border-color: var(--accent);
+}
+
+/* --- LIGHTBOX OVERLAY --- */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(20, 18, 16, 0.95); /* Deep dark background */
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease-out;
+  padding: 1rem; /* Small padding for mobile */
+}
+
+/* Container limits width and handles layout */
+.lightbox-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+}
+
+/* The Zoomed Image */
+.lightbox-content {
+  max-width: 100%;
+  max-height: 80vh; /* Leave 20% vertical space for caption/close button */
+  object-fit: contain;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+  border-radius: 4px;
+  animation: scaleIn 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* The Caption */
+.lightbox-caption {
+  margin-top: 1rem;
+  color: #e5e5e5;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  max-width: 90%;
+  line-height: 1.4;
+}
+
+/* Close Button (Top Right) */
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 10000;
+}
+
+.lightbox-close:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* --- DESKTOP TWEAKS --- */
+@media (min-width: 768px) {
+  .lightbox-overlay {
+    padding: 3rem; /* More breathing room on desktop */
+  }
+
+  .lightbox-content {
+    max-height: 85vh;
+  }
+  
+  .lightbox-caption {
+    font-size: 0.95rem;
+    max-width: 600px;
+  }
+  
+  .lightbox-close {
+    top: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+  }
+}
