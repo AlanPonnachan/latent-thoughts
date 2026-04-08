@@ -6,12 +6,12 @@ export default function Layout({ children }) {
       <header className="site-header">
         <div className="site-header__inner">
           <Link to="/" className="site-logo">
-            gradient<span>.</span>descent
+            latent<span>.</span>thoughts
           </Link>
           <nav>
             <ul className="site-nav">
               <li><NavLink to="/">Home</NavLink></li>
-              <li><a href="https://github.com/YOUR_USERNAME" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a href="https://github.com/AlanPonnachan" target="_blank" rel="noopener noreferrer">GitHub</a></li>
             </ul>
           </nav>
         </div>
@@ -22,7 +22,7 @@ export default function Layout({ children }) {
       </main>
 
       <footer className="site-footer">
-        <p>Written with care. No ads. No tracking. Built with React + Vite.</p>
+        <p>Written with care. No ads. Built with React + Vite.</p>
       </footer>
     </div>
   )
