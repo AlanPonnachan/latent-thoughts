@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 
-const BASE = '/from-paper-to-code/'
+const BASE = '/latent-thoughts/'
 
 export default defineConfig({
   plugins: [react()],
