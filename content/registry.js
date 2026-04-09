@@ -1,20 +1,20 @@
 export const SERIES = [
   {
-    slug: 'upstream-dynamics',
-    title: 'Upstream Dynamics',
-    description: 'A technical diary of my open-source contributions to major machine learning frameworks.',
-    tags: ['oss', 'keras', 'tensorflow', 'pytorch'],
+    slug: 'patch-notes',
+    title: 'Patch Notes',
+    description: 'A technical diary of my open-source contributions.',
+    tags: ['oss', 'python', 'keras', 'pydantic'],
   }
 ]
 
 export const POSTS = [
   {
     slug: 'keras-clahe',
-    series: 'upstream-dynamics',
+    series: 'patch-notes',
     order: 1,
     title: 'Adding a Native CLAHE Preprocessing Layer to Keras 3',
-    description: 'How to implement Contrast Limited Adaptive Histogram Equalization using pure tensor operations.',
-    date: '2024-04-10',
+    description: 'How I contributed Contrast Limited Adaptive Histogram Equalization to Keras using pure backend-agnostic tensor operations.',
+    date: '2026-04-10',
     loader: () => import('./posts/keras-clahe.md?raw'),
     components: {
       ClaheTileSplit: () => import('../src/components/interactive/keras-clahe/ClaheTileSplit.jsx'),

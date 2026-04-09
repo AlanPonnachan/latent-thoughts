@@ -1,15 +1,15 @@
 ---
 title: "Adding a Native CLAHE Preprocessing Layer to Keras 3"
 description: "How I contributed Contrast Limited Adaptive Histogram Equalization to Keras using pure backend-agnostic tensor operations."
-date: "2024-04-10"
-series: "upstream-dynamics"
+date: "2026-04-10"
+series: "patch-notes"
 order: 1
 readingTime: 8
 ---
 
 If you are training computer vision models on medical images, satellite imagery, or low-light photography, you frequently deal with low-contrast datasets. Feeding these raw images into a neural network often leads to poor feature extraction.
 
-Recently, I contributed a new preprocessing layer to the Keras repository (PR #21953) to address this: `ContrastLimitedAdaptiveHistogramEqualization`, or **CLAHE**.
+Recently, I contributed a new preprocessing layer to the Keras repository ([Keras PR #21953](https://github.com/keras-team/keras/pull/21953)) to address this: `ContrastLimitedAdaptiveHistogramEqualization`, or **CLAHE**.
 
 While you can run CLAHE using OpenCV, adding it as a native Keras layer means it becomes part of the computational graph. It runs natively using tensor operations across all Keras 3 backends (TensorFlow, JAX, and PyTorch), and it gets exported inside your model for inference without requiring external dependencies.
 
@@ -23,7 +23,7 @@ While the concept is simple, the results are often counterproductive. If an X-Ra
 
 We need to enhance contrast locally. 
 
-### How CLAHE Works: The Mechanism
+### How CLAHE Works
 
 The CLAHE algorithm has three major parts: tile generation, histogram equalization, and bilinear interpolation. Here is exactly what happens to an image passing through the algorithm:
 
@@ -119,7 +119,7 @@ img_keras_clahe = np.squeeze(np.array(clahe_layer(img_tensor))).astype(np.uint8)
 
 Running this on a standard X-Ray highlights the difference clearly:
 
-![CLAHE Comparison](/images/slide_comparison_layout.png "Original vs Global HE vs CLAHE")
+![CLAHE Comparison](/images/keras-clahe/comparison_chest_xray.png "Original vs Global HE vs CLAHE")
 
 Looking at the histograms:
 *   **Original:** The pixel intensities are bunched up, resulting in a dark, low-contrast image.
@@ -128,6 +128,6 @@ Looking at the histograms:
 
 ### Summary
 
-Adding operations like CLAHE directly into the model graph ensures consistency between training and inference. You don't need to worry about perfectly matching your inference environment's preprocessing to your training script—the transformation logic is baked directly into the model architecture.
+Ultimately, the goal of this PR was to make handling low-contrast images as frictionless as possible. By adding CLAHE as a native Keras layer, the entire preprocessing step becomes part of your computational graph. The math runs entirely on tensors, works seamlessly across TensorFlow, JAX, and PyTorch, and gets baked directly into your exported model.
 
 You can view the full source code and tests for the layer in [Keras PR #21953](https://github.com/keras-team/keras/pull/21953).
