@@ -14,12 +14,12 @@ export const POSTS = [
     order: 1,
     title: 'Adding a Native CLAHE Preprocessing Layer to Keras 3',
     description: 'How to implement Contrast Limited Adaptive Histogram Equalization using pure tensor operations.',
-    date: '2024-04-10', // Update to current date
+    date: '2024-04-10',
     loader: () => import('./posts/keras-clahe.md?raw'),
     components: {
-      ClaheTileSplit: () => import('../src/components/interactive/ClaheTileSplit.jsx'),
-      ClaheHistogram: () => import('../src/components/interactive/ClaheHistogram.jsx'),
-      ClaheInterpolation: () => import('../src/components/interactive/ClaheInterpolation.jsx'),
+      ClaheTileSplit: () => import('../src/components/interactive/keras-clahe/ClaheTileSplit.jsx'),
+      ClaheHistogram: () => import('../src/components/interactive/keras-clahe/ClaheHistogram.jsx'),
+      ClaheInterpolation: () => import('../src/components/interactive/keras-clahe/ClaheInterpolation.jsx'),
     },
   }
 ]
