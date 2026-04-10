@@ -14,7 +14,7 @@ function extractHeadings(markdown) {
     headings.push({
       level: match[1].length,
       text: match[2].trim(),
-      id: match[2].trim().toLowerCase().replace(/[^\w]+/g, '-')
+      id: match[2].trim().toLowerCase().replace(/[^\w]+/g, '-').replace(/^-+|-+$/g, '')
     })
   }
   return headings

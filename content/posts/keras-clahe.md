@@ -1,6 +1,6 @@
 ---
 title: "Adding a Native CLAHE Preprocessing Layer to Keras 3"
-description: "How I contributed Contrast Limited Adaptive Histogram Equalization to Keras using pure backend-agnostic tensor operations."
+description: "How I contributed Contrast Limited Adaptive Histogram Equalization to Keras.."
 date: "2026-04-10"
 series: "patch-notes"
 order: 1
@@ -89,11 +89,12 @@ Using the new layer is straightforward. It accepts a `data_format` argument (`"c
 
 ```python
 import os
-os.environ["KERAS_BACKEND"] = "tensorflow" # Works with JAX and PyTorch natively!
 import keras
 import cv2
 import numpy as np
 import requests
+
+os.environ["KERAS_BACKEND"] = "tensorflow" # Works with JAX and PyTorch natively!
 
 # 1. Download a low-contrast image
 url = "https://upload.wikimedia.org/wikipedia/commons/a/a1/Normal_posteroanterior_%28PA%29_chest_radiograph_%28X-ray%29.jpg"

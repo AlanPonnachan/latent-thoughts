@@ -358,7 +358,7 @@ img { max-width: 100%; height: auto; }
 .post-list-item__num {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
   min-width: 2ch;
   flex-shrink: 0;
 }
@@ -384,7 +384,7 @@ img { max-width: 100%; height: auto; }
 .post-list-item__meta {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
 }
 
 /* ============================================================

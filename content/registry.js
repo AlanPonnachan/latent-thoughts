@@ -13,7 +13,7 @@ export const POSTS = [
     series: 'patch-notes',
     order: 1,
     title: 'Adding a Native CLAHE Preprocessing Layer to Keras 3',
-    description: 'How I contributed Contrast Limited Adaptive Histogram Equalization to Keras using pure backend-agnostic tensor operations.',
+    description: 'How I contributed Contrast Limited Adaptive Histogram Equalization to Keras.',
     date: '2026-04-10',
     loader: () => import('./posts/keras-clahe.md?raw'),
     components: {
