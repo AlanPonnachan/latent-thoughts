@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 import rehypePrismPlus from 'rehype-prism-plus'
+import rehypeSlug from 'rehype-slug'
 import ZoomableImage from './ZoomableImage.jsx'
 
 // --- Helper: Extract text from React children ---
@@ -172,7 +173,7 @@ export default function MarkdownRenderer({ content, customComponents = {} }) {
     <div className="prose">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex, rehypeRaw, [rehypePrismPlus, { ignoreMissing: true }]]}
+        rehypePlugins={[rehypeSlug, rehypeKatex, rehypeRaw, [rehypePrismPlus, { ignoreMissing: true }]]}
         components={components}
       >
         {content}

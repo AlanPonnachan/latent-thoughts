@@ -401,16 +401,26 @@ img { max-width: 100%; height: auto; }
   align-items: center;
   gap: var(--sp-2);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--ink-faint);
+  font-size: 0.75rem;
+  color: var(--ink-muted); /* Changed to muted for better contrast */
   margin-bottom: var(--sp-6);
 }
 
 .post-header__breadcrumb a {
-  color: var(--ink-faint);
+  color: var(--ink-muted); /* Changed to muted */
   text-decoration: none;
+  font-weight: 600;
 }
 .post-header__breadcrumb a:hover { color: var(--accent); opacity: 1; }
+
+.post-header__meta {
+  display: flex;
+  gap: var(--sp-6);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-muted); /* Changed to muted */
+  flex-wrap: wrap;
+}
 
 .post-header__series {
   font-family: var(--font-mono);
@@ -437,14 +447,7 @@ img { max-width: 100%; height: auto; }
   margin-bottom: var(--sp-4);
 }
 
-.post-header__meta {
-  display: flex;
-  gap: var(--sp-6);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--ink-faint);
-  flex-wrap: wrap;
-}
+
 
 /* ============================================================
    MARKDOWN PROSE
@@ -1026,5 +1029,114 @@ img { max-width: 100%; height: auto; }
   button {
     min-height: 36px;
     touch-action: manipulation;
+  }
+}
+
+
+/* ============================================================
+   POST PAGE LAYOUT (Sticky Left Sidebar)
+   ============================================================ */
+
+/* The wrapper holding both columns */
+.post-layout {
+  display: flex;
+  align-items: stretch; 
+  gap: var(--sp-12);    
+  position: relative;
+}
+
+/* The Left Sidebar */
+.post-sidebar {
+  display: none; 
+  width: 200px;        
+  flex-shrink: 0;
+}
+
+/* Show sidebar on larger screens */
+@media (min-width: 1024px) {
+  .post-sidebar {
+    display: block;
+  }
+}
+
+/* The sticky mechanism */
+.post-sidebar__sticky {
+  position: sticky;
+  top: 120px; /* Stays fixed 120px from the top of the screen */
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-right: 1rem;
+}
+
+/* Custom scrollbar for TOC */
+.post-sidebar__sticky::-webkit-scrollbar {
+  width: 4px;
+}
+.post-sidebar__sticky::-webkit-scrollbar-thumb {
+  background: var(--ink-faint);
+  border-radius: 4px;
+}
+
+.post-sidebar__title {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted); 
+  margin-bottom: var(--sp-6);
+}
+
+.post-sidebar__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* Main headings (Level 2) */
+.post-sidebar__item button {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink); 
+  font-weight: 600;  
+  cursor: pointer;
+  line-height: 1.5;
+  transition: color 0.15s var(--ease);
+}
+
+.post-sidebar__item button:hover {
+  color: var(--accent);
+}
+
+/* Sub-heading TOC Links (Level 3) */
+.post-sidebar__item.level-3 button {
+  padding-left: 1rem;
+  font-size: 0.85rem;
+  color: #4a4540; 
+  font-weight: 400;
+}
+
+.post-sidebar__item.level-3 button:hover {
+  color: var(--accent);
+}
+
+
+
+/* The Main Content Column */
+.post-content {
+  flex: 1;
+  min-width: 0; /* Prevents flex children from blowing out width */
+  max-width: var(--content-width);
+}
+
+@media (max-width: 1023px) {
+  /* Center the content on mobile when the sidebar is hidden */
+  .post-content {
+    margin: 0 auto;
   }
 }
