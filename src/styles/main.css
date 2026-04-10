@@ -163,7 +163,7 @@ img { max-width: 100%; height: auto; }
   padding: var(--sp-8) var(--sp-4);
   text-align: center;
   font-size: 0.8rem;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
   font-family: var(--font-display);
   font-weight: 300;
 }
@@ -216,7 +216,7 @@ img { max-width: 100%; height: auto; }
   font-weight: 300;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
   margin-bottom: var(--sp-8);
 }
 
@@ -302,7 +302,7 @@ img { max-width: 100%; height: auto; }
 .series-header__back {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
   text-decoration: none;
   display: inline-flex;
   align-items: center;

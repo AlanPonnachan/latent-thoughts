@@ -11,7 +11,7 @@ export default function Layout({ children }) {
           <nav>
             <ul className="site-nav">
               <li><NavLink to="/">Home</NavLink></li>
-              <li><a href="https://github.com/AlanPonnachan" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a href="https://alanponnachan.github.io/#/contact" target="_blank" rel="noopener noreferrer">Contact</a></li>
             </ul>
           </nav>
         </div>
@@ -22,7 +22,7 @@ export default function Layout({ children }) {
       </main>
 
       <footer className="site-footer">
-        <p>Written with care. No ads. Built with React + Vite.</p>
+        <p>Latent Thoughts &copy; {new Date().getFullYear()}.</p>
       </footer>
     </div>
   )
