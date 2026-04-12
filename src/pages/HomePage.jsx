@@ -8,12 +8,11 @@ export default function HomePage() {
        <section className="home-hero">
         <p className="home-hero__eyebrow">Machine Learning & Engineering</p>
         <h1 className="home-hero__title">
-          To truly understand it,<br />
-          we must <em>build it.</em>
+          To truly understand it, we must <em>build it.</em>
         </h1>
         <p className="home-hero__desc">
           A technical diary documenting the journey from theory to implementation. 
-          Exploring ML research, writing algorithms from scratch, and contributing to open source. 
+          Exploring ML research, writing algorithms from scratch, and contributing to open source.
         </p>
       </section>
 
