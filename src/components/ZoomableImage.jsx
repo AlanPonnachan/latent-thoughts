@@ -38,7 +38,6 @@ export default function ZoomableImage({ src, alt, title, ...props }) {
           loading="lazy"
           {...props}
         />
-        {/* Optional: Show caption inline as well? Remove if you only want it in zoom */}
         {title && <figcaption>{title}</figcaption>}
       </figure>
 
@@ -46,7 +45,6 @@ export default function ZoomableImage({ src, alt, title, ...props }) {
       {isOpen && createPortal(
         <div className="lightbox-overlay" onClick={close} role="dialog" aria-modal="true">
           
-          {/* Close Button (Vital for Mobile) */}
           <button className="lightbox-close" onClick={close} aria-label="Close zoom">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -54,16 +52,19 @@ export default function ZoomableImage({ src, alt, title, ...props }) {
             </svg>
           </button>
 
-          {/* Image Wrapper to prevent click-through closing when clicking the image itself */}
-          <div className="lightbox-container" onClick={(e) => e.stopPropagation()}>
+          <div className="lightbox-container">
             <img
               src={src}
               alt={alt}
               className="lightbox-content"
+              onClick={(e) => e.stopPropagation()} 
             />
             
             {caption && (
-              <div className="lightbox-caption">
+              <div 
+                className="lightbox-caption"
+                onClick={(e) => e.stopPropagation()} 
+              >
                 {caption}
               </div>
             )}
