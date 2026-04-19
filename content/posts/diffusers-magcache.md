@@ -152,9 +152,7 @@ The performance gains scale directly with the computational depth of the model.
 
 Crucially, visual fidelity is strictly preserved. Unlike uniform step-skipping, MagCache dynamically enforces its error bounds. 
 
-```component
-MagCacheCompare
-```
+![comparison of different cache methods](/images/diffusers-magcache/comparison.png "Comparison of visual quality and efficiency")
 
 In practice, this results in:
 *   Preserved temporal coherence between frames.

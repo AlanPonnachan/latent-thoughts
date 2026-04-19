@@ -33,7 +33,6 @@ export const POSTS =[
     components: {
       MagCacheChart: () => import('../src/components/interactive/diffusers-magcache/MagCacheChart.jsx'),
       MagCacheFlowchart: () => import('../src/components/interactive/diffusers-magcache/MagCacheFlowchart.jsx'),
-      MagCacheCompare: () => import('../src/components/interactive/diffusers-magcache/MagCacheCompare.jsx'),
       MagCacheProgressBar: () => import('../src/components/interactive/diffusers-magcache/MagCacheProgressBar.jsx'),
     },
   }
