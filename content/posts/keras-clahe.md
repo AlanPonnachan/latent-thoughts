@@ -3,7 +3,7 @@ title: "Adding a Native CLAHE Preprocessing Layer to Keras 3"
 description: "How I contributed Contrast Limited Adaptive Histogram Equalization to Keras."
 date: "2026-04-10"
 series: "patch-notes"
-order: 1
+order: 2
 readingTime: 8
 ---
 

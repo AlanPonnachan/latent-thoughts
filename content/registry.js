@@ -9,9 +9,23 @@ export const SERIES =[
 
 export const POSTS =[
   {
-    slug: 'keras-clahe',
+    slug: 'diffusers-magcache',
     series: 'patch-notes',
     order: 1,
+    title: 'Making Video Diffusion 2.5x Faster',
+    description: 'My Journey Implementing MagCache in Diffusers.',
+    date: '2026-04-21',
+    loader: () => import('./posts/diffusers-magcache.md?raw'),
+    components: {
+      MagCacheChart: () => import('../src/components/interactive/diffusers-magcache/MagCacheChart.jsx'),
+      MagCacheFlowchart: () => import('../src/components/interactive/diffusers-magcache/MagCacheFlowchart.jsx'),
+      MagCacheProgressBar: () => import('../src/components/interactive/diffusers-magcache/MagCacheProgressBar.jsx'),
+    },
+  },
+  {
+    slug: 'keras-clahe',
+    series: 'patch-notes',
+    order: 2,
     title: 'Adding a Native CLAHE Preprocessing Layer to Keras 3',
     description: 'How I contributed Contrast Limited Adaptive Histogram Equalization to Keras.',
     date: '2026-04-10',
@@ -22,20 +36,6 @@ export const POSTS =[
       ClaheInterpolation: () => import('../src/components/interactive/keras-clahe/ClaheInterpolation.jsx'),
     },
   },
-  {
-    slug: 'diffusers-magcache',
-    series: 'patch-notes',
-    order: 2,
-    title: 'Accelerating Video Diffusion by 2.5x: Implementing MagCache in Diffusers',
-    description: 'Integrating a magnitude-aware caching algorithm for faster video generation.',
-    date: '2026-04-19',
-    loader: () => import('./posts/diffusers-magcache.md?raw'),
-    components: {
-      MagCacheChart: () => import('../src/components/interactive/diffusers-magcache/MagCacheChart.jsx'),
-      MagCacheFlowchart: () => import('../src/components/interactive/diffusers-magcache/MagCacheFlowchart.jsx'),
-      MagCacheProgressBar: () => import('../src/components/interactive/diffusers-magcache/MagCacheProgressBar.jsx'),
-    },
-  }
 ]
 
 export function getPost(slug) { return POSTS.find(p => p.slug === slug) }

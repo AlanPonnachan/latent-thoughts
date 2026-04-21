@@ -1,9 +1,9 @@
 ---
-title: "Accelerating Video Diffusion by 2.5x: Implementing MagCache in Diffusers"
-description: "Integrating a magnitude-aware caching algorithm for faster video generation."
-date: "2026-04-19"
+title: "Making Video Diffusion 2.5x Faster"
+description: "My Journey Implementing MagCache in Diffusers."
+date: "2026-04-21"
 series: "patch-notes"
-order: 2
+order: 1
 readingTime: 10
 ---
 
