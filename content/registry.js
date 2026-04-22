@@ -1,17 +1,31 @@
-export const SERIES = [
+export const SERIES =[
   {
     slug: 'patch-notes',
     title: 'Patch Notes',
     description: 'A technical diary of my open-source contributions.',
-    tags: ['oss', 'python', 'keras', 'pydantic'],
+    tags:['oss', 'python', 'keras', 'pydantic'],
   }
 ]
 
-export const POSTS = [
+export const POSTS =[
+  {
+    slug: 'diffusers-magcache',
+    series: 'patch-notes',
+    order: 1,
+    title: 'Making Video Diffusion 2.5x Faster',
+    description: 'My Journey Implementing MagCache in Diffusers.',
+    date: '2026-04-23',
+    loader: () => import('./posts/diffusers-magcache.md?raw'),
+    components: {
+      MagCacheChart: () => import('../src/components/interactive/diffusers-magcache/MagCacheChart.jsx'),
+      MagCacheFlowchart: () => import('../src/components/interactive/diffusers-magcache/MagCacheFlowchart.jsx'),
+      MagCacheProgressBar: () => import('../src/components/interactive/diffusers-magcache/MagCacheProgressBar.jsx'),
+    },
+  },
   {
     slug: 'keras-clahe',
     series: 'patch-notes',
-    order: 1,
+    order: 2,
     title: 'Adding a Native CLAHE Preprocessing Layer to Keras 3',
     description: 'How I contributed Contrast Limited Adaptive Histogram Equalization to Keras.',
     date: '2026-04-10',
@@ -21,7 +35,7 @@ export const POSTS = [
       ClaheHistogram: () => import('../src/components/interactive/keras-clahe/ClaheHistogram.jsx'),
       ClaheInterpolation: () => import('../src/components/interactive/keras-clahe/ClaheInterpolation.jsx'),
     },
-  }
+  },
 ]
 
 export function getPost(slug) { return POSTS.find(p => p.slug === slug) }
