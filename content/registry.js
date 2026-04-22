@@ -14,7 +14,7 @@ export const POSTS =[
     order: 1,
     title: 'Making Video Diffusion 2.5x Faster',
     description: 'My Journey Implementing MagCache in Diffusers.',
-    date: '2026-04-21',
+    date: '2026-04-23',
     loader: () => import('./posts/diffusers-magcache.md?raw'),
     components: {
       MagCacheChart: () => import('../src/components/interactive/diffusers-magcache/MagCacheChart.jsx'),

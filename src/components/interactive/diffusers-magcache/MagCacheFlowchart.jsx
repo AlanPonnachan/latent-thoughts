@@ -73,7 +73,19 @@ export default function MagCacheFlowchart() {
 
         switch(currentNode) {
           case 'START':
-            const addedError = step > 40 ? 0.045 : 0.015
+            let addedError = 0;
+            
+            if (step > 40) {
+              // The Chaotic Phase: Error always spikes heavily.
+              // COND1 will catch this immediately.
+              addedError = 0.045;
+            } else {
+              // The Stable Phase: Balance between COND1 and COND2
+              // 75% chance of a small error (0.012). This allows skips to reach 3.
+              // 25% chance of a medium spike (0.035). This forces COND1 to fail early.
+              const isSpike = Math.random() > 0.75;
+              addedError = isSpike ? 0.035 : 0.012;
+            }
             return { ...prev, accumulatedError: accumulatedError + addedError, currentNode: 'COND1' }
           case 'COND1':
             return { ...prev, currentNode: accumulatedError <= THRESHOLD ? 'COND2' : 'COMPUTE' }

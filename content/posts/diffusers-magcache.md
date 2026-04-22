@@ -1,7 +1,7 @@
 ---
 title: "Making Video Diffusion 2.5x Faster"
 description: "My Journey Implementing MagCache in Diffusers."
-date: "2026-04-21"
+date: "2026-04-23"
 series: "patch-notes"
 order: 1
 readingTime: 10
@@ -17,7 +17,7 @@ Here is a technical breakdown of how the math works, the engineering challenges 
 
 ---
 
-### The Math: A Hidden Pattern in Residuals
+### Hidden Pattern in Residuals
 
 To understand *when* it's safe to skip a step, we need to look at the **residual**—the difference between the transformer's output and its input at a given timestep.
 
@@ -161,4 +161,4 @@ In practice, this results in:
 
 Adaptive caching methods like MagCache offer a highly practical way to optimize diffusion inference without the overhead of model distillation or architectural rewriting. By leveraging the intrinsic math of the denoising process, we can bypass a massive amount of redundant computation.
 
-The implementation is merged into `diffusers`, and you can review the original research in the NeurIPS 2025 paper: *"MagCache: Fast Video Generation with Magnitude-Aware Cache"*.
+The implementation is merged into `diffusers`, and you can review the original research in the NeurIPS 2025 paper: *[MagCache: Fast Video Generation with Magnitude-Aware Cache](https://arxiv.org/abs/2506.09045)*.
