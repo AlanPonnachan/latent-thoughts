@@ -1,7 +1,7 @@
 ---
 title: "Making Video Diffusion 2.5x Faster"
 description: "My Journey Implementing MagCache in Diffusers."
-date: "2026-04-23"
+date: "2026-04-27"
 series: "patch-notes"
 order: 1
 readingTime: 10
