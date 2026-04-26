@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 
-// Import all interactive components
+// Import all your interactive components
 import MagCacheChart from '../components/interactive/diffusers-magcache/MagCacheChart.jsx'
 import MagCacheFlowchart from '../components/interactive/diffusers-magcache/MagCacheFlowchart.jsx'
 import MagCacheProgressBar from '../components/interactive/diffusers-magcache/MagCacheProgressBar.jsx'
@@ -27,8 +27,11 @@ export default function StudioPage() {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      // 1. Force the canvas to be EXACTLY the size of the browser window
+      height: '100vh',
       width: '100vw',
+      overflow: 'hidden', // STRICTLY NEVER SCROLL
+      
       backgroundColor: '#0a0a0a',
       backgroundImage: `
         radial-gradient(circle at center, transparent 0%, #0a0a0a 100%),
@@ -39,16 +42,39 @@ export default function StudioPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '2rem',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      padding: '2vmin' // Fluid padding so it never touches the absolute edge
     }}>
+      
       <div style={{ 
-        width: '100%', 
-        maxWidth: '900px',
+        // 2. Adapt to the interactive:
+        // - Will naturally size to the component
+        // - At a minimum, it stretches to 75% of the screen width so it's large and readable
+        // - Capped at 96% width/height so it strictly fits inside the viewport limits
+        width: 'fit-content',
+        minWidth: '75vw',
+        maxWidth: '96vw',
+        maxHeight: '96vh',
+        
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
         borderRadius: '8px',
-        boxShadow: '0 24px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05), 0 0 120px rgba(255,255,255,0.03)'
+        boxShadow: '0 24px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05), 0 0 120px rgba(255,255,255,0.03)',
+        overflow: 'hidden' // Keeps the wrapper corners clean
       }}>
-        <Component />
+        
+        {/* Child wrapper ensures internal flex layouts can stretch if the component asks for it */}
+        <div style={{ 
+          width: '100%', 
+          height: '100%', 
+          display: 'flex', 
+          flexDirection: 'column',
+          overflow: 'hidden' 
+        }}>
+          <Component />
+        </div>
+
       </div>
     </div>
   )
