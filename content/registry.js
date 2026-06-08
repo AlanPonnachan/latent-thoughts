@@ -9,9 +9,24 @@ export const SERIES =[
 
 export const POSTS =[
   {
-    slug: 'diffusers-magcache',
+    //TODO
+    slug: 'modular-sd3',
     series: 'patch-notes',
     order: 1,
+    title: 'Tearing Down SD3',
+    description: 'My Journey Building the Stable Diffusion 3 Modular Pipeline',
+    date: '2026-06-17',
+    loader: () => import('./posts/diffusers-magcache.md?raw'),
+    components: {
+      MagCacheChart: () => import('../src/components/interactive/diffusers-magcache/MagCacheChart.jsx'),
+      MagCacheFlowchart: () => import('../src/components/interactive/diffusers-magcache/MagCacheFlowchart.jsx'),
+      MagCacheProgressBar: () => import('../src/components/interactive/diffusers-magcache/MagCacheProgressBar.jsx'),
+    },
+  },
+  {
+    slug: 'diffusers-magcache',
+    series: 'patch-notes',
+    order: 2,
     title: 'Making Video Diffusion 2.5x Faster',
     description: 'My Journey Implementing MagCache in Diffusers.',
     date: '2026-04-27',
@@ -25,7 +40,7 @@ export const POSTS =[
   {
     slug: 'keras-clahe',
     series: 'patch-notes',
-    order: 2,
+    order: 3,
     title: 'Adding a Native CLAHE Preprocessing Layer to Keras 3',
     description: 'How I contributed Contrast Limited Adaptive Histogram Equalization to Keras.',
     date: '2026-04-10',
