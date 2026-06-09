@@ -16,7 +16,7 @@ export const POSTS =[
     title: 'Tearing Down SD3',
     description: 'My Journey Building the Stable Diffusion 3 Modular Pipeline',
     date: '2026-06-17',
-    loader: () => import('./posts/diffusers-magcache.md?raw'),
+    loader: () => import('./posts/modular-sd3.md?raw'),
     components: {
       MagCacheChart: () => import('../src/components/interactive/diffusers-magcache/MagCacheChart.jsx'),
       MagCacheFlowchart: () => import('../src/components/interactive/diffusers-magcache/MagCacheFlowchart.jsx'),
