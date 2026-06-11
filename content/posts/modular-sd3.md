@@ -16,3 +16,12 @@ But that power comes at a steep cost: memory. For most developers running consum
 Recently, the Diffusers team introduced **Modular Diffusers**—a new architecture that breaks traditional, rigid pipelines into composable, Lego-like blocks. I realized this was exactly what SD3 needed. If we could break SD3 into independent blocks, users could dynamically drop massive components (like the T5 encoder), inject custom logic, and seamlessly manage memory.
 
 I recently authored PR [#13324](https://github.com/huggingface/diffusers/pull/13324), which officially introduces the `StableDiffusion3ModularPipeline`. Here is a look under the hood at the engineering challenges of breaking down a monolith, the math behind FlowMatch dynamic shifting, and how you can use this to run SD3 without melting your GPU.
+
+
+## The Problem with Monoliths
+
+In the standard Diffusers architecture, pipelines are monolithic Python classes. Text-to-Image (T2I) and Image-to-Image (I2I) are entirely separate classes (`StableDiffusion3Pipeline` vs `StableDiffusion3Img2ImgPipeline`). 
+
+If you look closely at the codebase, they share 80% of the same logic. But because they are rigid monoliths, if you want to skip a specific step, inject a custom CFG (Classifier-Free Guidance) guider, or selectively unload weights, you usually have to write a hacky subclass or override internal methods.
+
+With Modular Diffusers, a pipeline is just a collection of `ModularPipelineBlocks`. My goal was to create an `SD3AutoBlocks` class that automatically resolves the workflow based on your inputs. Give it a prompt? It runs T2I. Give it an image and a prompt? It runs I2I.
