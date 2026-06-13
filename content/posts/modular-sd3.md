@@ -25,3 +25,21 @@ In the standard Diffusers architecture, pipelines are monolithic Python classes.
 If you look closely at the codebase, they share 80% of the same logic. But because they are rigid monoliths, if you want to skip a specific step, inject a custom CFG (Classifier-Free Guidance) guider, or selectively unload weights, you usually have to write a hacky subclass or override internal methods.
 
 With Modular Diffusers, a pipeline is just a collection of `ModularPipelineBlocks`. My goal was to create an `SD3AutoBlocks` class that automatically resolves the workflow based on your inputs. Give it a prompt? It runs T2I. Give it an image and a prompt? It runs I2I.
+
+## Challenge 1: The Triple-Encoder State Machine
+
+The first major hurdle was the text encoding step. SD3 requires processing text through CLIP-L, CLIP-G, and T5-XXL, and then concatenating/padding those embeddings into a single joint representation. 
+
+In a modular setup, state is passed between blocks using a `PipelineState` object. The challenge here is ensuring that if a user *doesn't* load a model, the block doesn't crash, but handles it gracefully. 
+
+I built the `StableDiffusion3TextEncoderStep` to dynamically check for components:
+
+```python
+# From src/diffusers/modular_pipelines/stable_diffusion_3/encoders.py
+if text_encoder is None or tokenizer is None:
+    prompt_embeds = torch.zeros((batch_size, 77, hidden_size), device=device, dtype=dtype)
+    pooled_prompt_embeds = torch.zeros((batch_size, hidden_size), device=device, dtype=dtype)
+    return prompt_embeds, pooled_prompt_embeds
+```
+
+This simple fallback is actually a superpower. It means we can instantiate the pipeline and explicitly tell it to ignore T5. **[NEED INFO: Explain how much VRAM dropping T5 saves, e.g., "By dropping the 4.7B parameter T5 model, we instantly save ~X GB of VRAM, making 8K generation possible on a 16GB GPU."]**
