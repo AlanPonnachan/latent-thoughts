@@ -43,3 +43,27 @@ if text_encoder is None or tokenizer is None:
 ```
 
 This simple fallback is actually a superpower. It means we can instantiate the pipeline and explicitly tell it to ignore T5. **[NEED INFO: Explain how much VRAM dropping T5 saves, e.g., "By dropping the 4.7B parameter T5 model, we instantly save ~X GB of VRAM, making 8K generation possible on a 16GB GPU."]**
+
+
+## Challenge 2: Isolating FlowMatch Dynamic Shifting
+
+One of the unique mathematical features of SD3 is sequence-length dependent timestep shifting. Unlike older diffusion models, SD3 shifts its noise schedule based on the resolution of the image. 
+
+The math looks like this:
+
+$$ \mu = \text{image\_seq\_len} \times m + b $$
+
+Where $m$ and $b$ are derived from a base sequence length and base shift. 
+
+In a monolith, this calculation is buried deep inside the `__call__` method. To modularize this, I had to extract it into its own isolated block: `StableDiffusion3SetTimestepsStep`.
+
+```python
+# From src/diffusers/modular_pipelines/stable_diffusion_3/before_denoise.py
+def calculate_shift(image_seq_len, base_seq_len=256, max_seq_len=4096, base_shift=0.5, max_shift=1.15):
+    m = (max_shift - base_shift) / (max_seq_len - base_seq_len)
+    b = base_shift - m * base_seq_len
+    mu = image_seq_len * m + b
+    return mu
+```
+
+By isolating this, the `SetTimestepsStep` calculates the `mu` value based strictly on the latent shape present in the `BlockState`, and updates the FlowMatch scheduler. This ensures that whether the latents came from T2I (pure noise) or I2I (a VAE encoded image), the math holds up perfectly.
