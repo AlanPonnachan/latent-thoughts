@@ -67,3 +67,68 @@ def calculate_shift(image_seq_len, base_seq_len=256, max_seq_len=4096, base_shif
 ```
 
 By isolating this, the `SetTimestepsStep` calculates the `mu` value based strictly on the latent shape present in the `BlockState`, and updates the FlowMatch scheduler. This ensures that whether the latents came from T2I (pure noise) or I2I (a VAE encoded image), the math holds up perfectly.
+
+## Challenge 3: Taming the CFG Loop
+
+The heart of the pipeline is the denoising loop. Handling Classifier-Free Guidance (CFG) in a modular way is notoriously tricky because it requires concatenating conditional and unconditional embeddings, running the transformer, and then splitting the noise predictions back apart.
+
+Instead of hardcoding CFG into the loop, I routed it through the new `ClassifierFreeGuidance` guider component inside `StableDiffusion3LoopDenoiser`.
+
+```python
+guider_inputs = {
+    "hidden_states": (block_state.latents, block_state.latents) if do_cfg else block_state.latents,
+    "encoder_hidden_states": (block_state.prompt_embeds, block_state.negative_prompt_embeds) if do_cfg else block_state.prompt_embeds,
+    # ...
+}
+
+# The guider handles the batching automatically!
+guider_state = components.guider.prepare_inputs(guider_inputs)
+```
+
+This decouples the transformer's forward pass from the CFG logic entirely. 
+
+## The Results: Fast, Modular, Memory-Efficient SD3
+
+So, what does it actually look like to use this? Here is the exact script I use to run SD3 Modular, specifically dropping the T5 text encoder and utilizing `ComponentsManager` to automatically offload unused models to the CPU.
+
+```python
+import torch
+from diffusers import ComponentsManager
+from diffusers.modular_pipelines.stable_diffusion_3 import StableDiffusion3ModularPipeline, StableDiffusion3AutoBlocks
+
+# 1. Enable automatic CPU offloading
+components = ComponentsManager()
+components.enable_auto_cpu_offload(device="cuda")
+
+# 2. Instantiate the Modular Pipeline 
+blocks = StableDiffusion3AutoBlocks()
+pipeline = StableDiffusion3ModularPipeline(blocks=blocks, components_manager=components)
+
+repo_id = "stabilityai/stable-diffusion-3-medium-diffusers"
+
+# ... [Load components individually] ...
+
+# 3. Inject components - Notice we pass None for T5!
+pipeline.update_components(
+    tokenizer=tokenizer,
+    tokenizer_2=tokenizer_2,
+    tokenizer_3=None,    # Dropped to prevent OOM!
+    scheduler=scheduler,
+    guider=guider,
+    image_processor=image_processor,
+    text_encoder=text_encoder,
+    text_encoder_2=text_encoder_2,
+    text_encoder_3=None, # Dropped to prevent OOM!
+    transformer=transformer,
+    vae=vae
+)
+
+prompt = "A highly detailed macro photography of a glowing bioluminescent blue butterfly resting on a vibrant red rose, dark magical forest background, cinematic lighting, 8k resolution, masterpiece"
+
+t2i_output = pipeline(
+    prompt=prompt,
+    num_inference_steps=28,
+    guidance_scale=7.0,
+    generator=torch.manual_seed(42)
+)
+```
